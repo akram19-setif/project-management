@@ -16,6 +16,13 @@ return new class extends Migration
             $table->string('name');
             $table->longText('description')->nullable();
             $table->string('image_path')->nullable();
+            $table->string('status');
+            $table->string('priority');
+            $table->string('due_date')->nullable();
+            $table->string('assigned_user_id')->constrained('users');
+            $table->string('project_id')->constrained('projects');
+            $table->foreign('created_by')->constrained('users');
+            $table->foreign('updated_by')->constrained('users');
             $table->timestamps();
         });
     }
