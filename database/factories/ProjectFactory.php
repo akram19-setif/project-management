@@ -19,8 +19,8 @@ class ProjectFactory extends Factory
         return [
             'name' => fake()->sentence(),
             'description' => fake()->realText(),
-            'due_date' =>fake()->dateTimeBetween('now', '+1 year'),
-            'status' => fake()->randomElement(['pending', 'in progress', 'completed']),
+            'due_date' => fake()->dateTimeBetween('now', '+1 year'),
+            'status' => fake()->randomElement(['pending', 'in_progress', 'completed']),
             'image_path' => fake()->imageUrl(),
             'created_by' => 1,
             'updated_by' => 1,
