@@ -2,57 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ProjectResource;
-use App\Http\Resources\TaskResource;
+use App\Http\Controllers\Controller;
 use App\Models\Project;
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index() {}
+    public function index()
+    {
+        $projects = Project::with('tasks')->get();
+        $success = session('success');
+        $queryParams = request()->query();
+        return inertia('Project/Index', [
+            'projects' => $projects,
+            'success' => $success,
+            'queryParams' => $queryParams,
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return inertia("Project/Create");
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProjectRequest $request)
+    public function store(Request $request)
     {
-
-        return to_route('project.index')
-            ->with('success', 'Project was created');
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Project $project) {}
+    public function show(string $id)
+    {
+        //
+    }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Project $project) {}
+    public function edit(string $id)
+    {
+        //
+    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRequest $request, Project $project) {}
+    public function update(Request $request, string $id)
+    {
+        //
+    }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project) {}
+    public function destroy(string $id)
+    {
+        //
+    }
 }
