@@ -22,8 +22,7 @@ export default function Index({
     } else {
       delete queryParams[name];
     }
-
-    router.get(route("project.index"), queryParams);
+    router.get(route("project.index"), { ...queryParams });
   };
 
   const onKeyPress = (name, e) => {
@@ -140,7 +139,7 @@ export default function Index({
                       <th className="px-3 py-3">
                         <TextInput
                           className="w-full"
-                          defaultValue={queryParams.name}
+                          defaultValue={queryParams?.name || ""}
                           placeholder="Project Name"
                           onBlur={(e) =>
                             searchFieldChanged("name", e.target.value)
@@ -151,7 +150,7 @@ export default function Index({
                       <th className="px-3 py-3">
                         <SelectInput
                           className="w-full"
-                          defaultValue={queryParams.status}
+                          defaultValue={queryParams?.status}
                           onChange={(e) =>
                             searchFieldChanged("status", e.target.value)
                           }
@@ -199,7 +198,7 @@ export default function Index({
                         <td className="px-3 py-2 text-nowrap">
                           {project.due_date}
                         </td>
-                        <td className="px-3 py-2">{project.createdBy.name}</td>
+                        <td className="px-3 py-2">{project.name}</td>
                         <td className="px-3 py-2 text-nowrap">
                           <Link
                             href={route("project.edit", project.id)}

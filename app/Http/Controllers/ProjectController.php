@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProjectResource;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -13,11 +14,18 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::with('tasks')->get();
+
+        $projects  = Project::paginate(10)->onEachSide(1);
         $success = session('success');
-        $queryParams = request()->query();
+        if (request("name")) {
+            $projects = $projects->where('name', 'like', '%' . request('name') . '%');
+        }
+        if (request("status")) {
+            $projects = $projects->where('status', request('status'));
+        }
+        $queryParams = request()->query() ?: [];
         return inertia('Project/Index', [
-            'projects' => $projects,
+            'projects' => ProjectResource::collection($projects),
             'success' => $success,
             'queryParams' => $queryParams,
         ]);
