@@ -15,15 +15,24 @@ class ProjectController extends Controller
     public function index()
     {
 
-        $projects  = Project::paginate(10)->onEachSide(1);
+        $query = Project::query();
         $success = session('success');
-        if (request("name")) {
-            $projects = $projects->where('name', 'like', '%' . request('name') . '%');
+        if ($name = request('name')) {
+            $query->where('name', 'like', '%' . $name . '%');
         }
-        if (request("status")) {
-            $projects = $projects->where('status', request('status'));
+        if ($status = request('status')) {
+            $query->where('status', $status);
         }
-        $queryParams = request()->query() ?: [];
+        if ($sortField = request('sort_field')) {
+            $sortDirection = request('sort_direction', 'asc');
+            $allowedFields = ['id', 'name', 'status', 'created_at', 'due_date'];
+            $allowedDirections = ['asc', 'desc'];
+            if (in_array($sortField, $allowedFields) && in_array($sortDirection, $allowedDirections)) {
+                $query->orderBy($sortField, $sortDirection);
+            }
+        }
+        $projects = $query->paginate(5);
+        $queryParams = request()->query() ?: null;
         return inertia('Project/Index', [
             'projects' => ProjectResource::collection($projects),
             'success' => $success,

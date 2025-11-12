@@ -13,7 +13,30 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+
+        $query = Task::query();
+        $success = session('success');
+        if ($name = request('name')) {
+            $query->where('name', 'like', '%' . $name . '%');
+        }
+        if ($status = request('status')) {
+            $query->where('status', $status);
+        }
+        if ($sortField = request('sort_field')) {
+            $sortDirection = request('sort_direction', 'asc');
+            $allowedFields = ['id', 'name', 'status', 'created_at', 'due_date'];
+            $allowedDirections = ['asc', 'desc'];
+            if (in_array($sortField, $allowedFields) && in_array($sortDirection, $allowedDirections)) {
+                $query->orderBy($sortField, $sortDirection);
+            }
+        }
+        
+        $tasks = $query->paginate(5);
+        return inertia('Task/index', [
+            'tasks' => $tasks,
+            'queryParams' => request()->query() ?: null
+
+        ]);
     }
 
     /**
