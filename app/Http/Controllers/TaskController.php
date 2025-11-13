@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,6 @@ class TaskController extends Controller
      */
     public function index()
     {
-
         $query = Task::query();
         $success = session('success');
         if ($name = request('name')) {
@@ -30,22 +30,19 @@ class TaskController extends Controller
                 $query->orderBy($sortField, $sortDirection);
             }
         }
-        
         $tasks = $query->paginate(5);
-        return inertia('Task/index', [
-            'tasks' => $tasks,
-            'queryParams' => request()->query() ?: null
-
+        $queryParams = request()->query() ?: null;
+        return inertia('Task/Index', [
+            'tasks' => TaskResource::collection($tasks),
+            'success' => $success,
+            'queryParams' => $queryParams,
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -58,23 +55,22 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Task $task)
     {
-        //
+        return inertia('Task/Show', [
+            'task' => new TaskResource($task),
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+    public function edit(Task $task) {}
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Task $task)
     {
         //
     }
@@ -82,24 +78,10 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function destroy(Task $task) {}
 
     /**
      * Display tasks assigned to the authenticated user.
      */
-    public function myTasks()
-    {
-        $user = auth()->user();
-        $tasks = Task::with('project')
-            ->where('assigned_user_id', $user->id)
-            ->get();
-
-
-        return inertia('Task/index', [
-            'tasks' => $tasks
-        ]);
-    }
+    public function myTasks() {}
 }

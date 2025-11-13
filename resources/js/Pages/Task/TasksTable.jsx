@@ -11,6 +11,7 @@ export default function TasksTable({
   queryParams = null,
   hideProjectColumn = false,
 }) {
+  console.log("tasks", tasks);
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -154,27 +155,27 @@ export default function TasksTable({
                   <img src={task.image_path} style={{ width: 60 }} />
                 </td>
                 {!hideProjectColumn && (
-                  <td className="px-3 py-2">{task.project.name}</td>
+                  <td className="px-3 py-2">{task.project?.name}</td>
                 )}
                 <th className="px-3 py-2 text-gray-100 hover:underline">
-                  <Link href={route("task.show", task.id)}>{task.name}</Link>
+                  <Link href={route("task.show", task.id)}>{task?.name}</Link>
                 </th>
                 <td className="px-3 py-2">
                   <span
                     className={
                       "px-2 py-1 rounded text-nowrap text-white " +
-                      TASK_STATUS_CLASS_MAP[task.status]
+                      TASK_STATUS_CLASS_MAP[task?.status]
                     }
                   >
-                    {TASK_STATUS_TEXT_MAP[task.status]}
+                    {TASK_STATUS_TEXT_MAP[task?.status]}
                   </span>
                 </td>
                 <td className="px-3 py-2 text-nowrap">{task.created_at}</td>
                 <td className="px-3 py-2 text-nowrap">{task.due_date}</td>
-                <td className="px-3 py-2">{task.createdBy.name}</td>
+                <td className="px-3 py-2">{task?.createdBy?.name}</td>
                 <td className="px-3 py-2 text-nowrap">
                   <Link
-                    href={route("task.edit", task.id)}
+                    href={route("task.edit", task?.id)}
                     className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
                   >
                     Edit
@@ -191,7 +192,8 @@ export default function TasksTable({
           </tbody>
         </table>
       </div>
-      <Pagination links={tasks.meta.links} />
+
+      <Pagination links={tasks?.meta.links} />
     </>
   );
 }
