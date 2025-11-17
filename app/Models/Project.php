@@ -10,6 +10,17 @@ class Project extends Model
 {
     use HasFactory;
 
+
+    protected $fillable = [
+        'name',
+        'image_path',
+        'status',
+        'due_date',
+        'description',
+        'created_by',
+        'updated_by',
+    ];
+
     /**
      * Get the tasks for the project.
      */
@@ -21,7 +32,7 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-     public function updatedBy()
+    public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }

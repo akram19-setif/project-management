@@ -49,11 +49,11 @@ export default function Create({ auth }) {
                 <TextInput
                   id="project_image_path"
                   type="file"
-                  name="image"
+                  name="image_path"
                   className="mt-1 block w-full"
-                  onChange={(e) => setData("image", e.target.files[0])}
+                  onChange={(e) => setData("image_path", e.target.files[0])}
                 />
-                <InputError message={errors.image} className="mt-2" />
+                <InputError message={errors.image_path} className="mt-2" />
               </div>
               <div className="mt-4">
                 <InputLabel htmlFor="project_name" value="Project Name" />
@@ -127,9 +127,11 @@ export default function Create({ auth }) {
                 >
                   Cancel
                 </Link>
-                <button className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600">
-                  Submit
-                </button>
+                <input
+                  className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
+                  type="submit"
+                  value="Submit"
+                />
               </div>
             </form>
           </div>

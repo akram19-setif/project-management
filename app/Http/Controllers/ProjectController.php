@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
@@ -25,7 +26,7 @@ class ProjectController extends Controller
             $query->where('status', $status);
         }
         if ($sortField = request('sort_field')) {
-            $sortDirection = request('sort_direction', 'asc');
+            $sortDirection = request('sort_direction', 'desc');
             $allowedFields = ['id', 'name', 'status', 'created_at', 'due_date'];
             $allowedDirections = ['asc', 'desc'];
             if (in_array($sortField, $allowedFields) && in_array($sortDirection, $allowedDirections)) {
@@ -37,6 +38,7 @@ class ProjectController extends Controller
         return inertia('Project/Index', [
             'projects' => ProjectResource::collection($projects),
             'queryParams' => $queryParams,
+            'success' => session('success'),
         ]);
     }
 
@@ -45,15 +47,19 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Project/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['created_by'] = auth()->user()->id;
+        $data['updated_by'] = auth()->user()->id;
+        $project = Project::create($data);
+        return redirect()->route('project.index', $project)->with('success', 'Project created successfully');
     }
 
     /**
