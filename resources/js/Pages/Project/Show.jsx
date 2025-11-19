@@ -7,7 +7,6 @@ import {
 import TasksTable from "../Task/TasksTable";
 export default function Show({ auth, success, project, tasks, queryParams }) {
   const projectData = project?.data;
-  console.log("projectData", projectData);
   return (
     <AuthenticatedLayout
       user={auth.user}

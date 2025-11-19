@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -59,7 +61,7 @@ class ProjectController extends Controller
         $image = $data['image_path'] ?? null;
 
         if ($image) {
-            $data['image_path'] = $image->store('/public/project/' .  Str::random() . "public");
+            $data['image_path'] = $image->store('project/' .  Str::random() . "public");
         }
         $project = Project::create($data);
         return redirect()->route('project.index', $project)->with('success', 'Project created successfully');
@@ -102,9 +104,19 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest  $request, Project $project)
     {
-        //
+        $data = $request->validated();
+        $data['updated_by'] = auth()->user()->id;
+        $image = $data['image_path'] ?? null;
+      if ($project->image_path) {
+            Storage::delete($project->image_path);
+        }
+        if ($image) {
+            $data['image_path'] = $image->store('project/' .  Str::random() . "public");
+        }
+        $project->update($data);
+        return redirect()->route('project.index', $project)->with('success', "Project {$project->name} updated successfully");
     }
 
     /**

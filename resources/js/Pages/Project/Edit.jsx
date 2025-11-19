@@ -7,19 +7,20 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Create({ auth, project }) {
-  const { data, setData, post, errors, reset } = useForm({
+  console.log(project);
+  const { data, setData, put, errors, reset } = useForm({
     image: "",
-    name: project.name || "",
-    status: project.status || "",
-    description: project.description || "",
-    due_date: project.due_date || "",
+    name: project?.data?.name || "",
+    status: project?.data?.status || "",
+    description: project?.data?.description || "",
+    due_date: project?.data?.due_date || "",
     _method: "PUT",
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    post(route("project.update", project.id));
+    put(route("project.update", project?.data?.id));
   };
 
   return (
@@ -28,7 +29,7 @@ export default function Create({ auth, project }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Edit project "{project.name}"
+            Edit project "{project?.data?.name}"
           </h2>
         </div>
       }
@@ -42,9 +43,9 @@ export default function Create({ auth, project }) {
               onSubmit={onSubmit}
               className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
             >
-              {project.image_path && (
+              {project?.data?.image_path && (
                 <div className="mb-4">
-                  <img src={project.image_path} className="w-64" />
+                  <img src={project?.data?.image_path} className="w-64" />
                 </div>
               )}
               <div>
@@ -57,9 +58,9 @@ export default function Create({ auth, project }) {
                   type="file"
                   name="image"
                   className="mt-1 block w-full"
-                  onChange={(e) => setData("image", e.target.files[0])}
+                  onChange={(e) => setData("image_path", e.target.files[0])}
                 />
-                <InputError message={errors.image} className="mt-2" />
+                <InputError message={errors.image_path} className="mt-2" />
               </div>
               <div className="mt-4">
                 <InputLabel htmlFor="project_name" value="Project Name" />
@@ -124,7 +125,7 @@ export default function Create({ auth, project }) {
                   <option value="completed">Completed</option>
                 </SelectInput>
 
-                <InputError message={errors.project_status} className="mt-2" />
+                <InputError message={errors.status} className="mt-2" />
               </div>
               <div className="mt-4 text-right">
                 <Link
