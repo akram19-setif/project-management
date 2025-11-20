@@ -58,7 +58,11 @@ class TaskController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Task $task) {}
+    public function edit(Task $task) {
+        return inertia('Task/Edit', [
+            'task' => new TaskResource($task),
+        ]);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -66,6 +70,7 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         //
+        
     }
 
     /**

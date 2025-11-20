@@ -11,6 +11,8 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr; 
+
 
 
 
@@ -55,16 +57,22 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        $data = $request->validated();
-        $data['created_by'] = auth()->user()->id;
-        $data['updated_by'] = auth()->user()->id;
-        $image = $data['image_path'] ?? null;
+       $data = $request->validated();
+    $data['created_by'] = auth()->id(); 
+    $data['updated_by'] = auth()->id();
 
-        if ($image) {
-            $data['image_path'] = $image->store('project/' .  Str::random() . "public");
-        }
-        $project = Project::create($data);
-        return redirect()->route('project.index', $project)->with('success', 'Project created successfully');
+    
+    $image = $request->file('image_path');  
+    $projectData = Arr::except($data, ['image_path']); 
+
+    $project = Project::create($projectData);
+    if ($image) {
+        $path = $image->store('public/project/' . $project->id);
+        $project->update(['image_path' => $path]);
+    }
+
+    return redirect()->route('project.index', $project)
+        ->with('success', 'Project created successfully');
     }
 
     /**
@@ -107,16 +115,20 @@ class ProjectController extends Controller
     public function update(UpdateProjectRequest  $request, Project $project)
     {
         $data = $request->validated();
-        $data['updated_by'] = auth()->user()->id;
-        $image = $data['image_path'] ?? null;
-      if ($project->image_path) {
+    $data['updated_by'] = auth()->user()->id;
+    $newImage = $request->file('image_path'); 
+
+    if ($newImage) {
+        if ($project->image_path) {
             Storage::delete($project->image_path);
         }
-        if ($image) {
-            $data['image_path'] = $image->store('project/' .  Str::random() . "public");
-        }
-        $project->update($data);
-        return redirect()->route('project.index', $project)->with('success', "Project {$project->name} updated successfully");
+        $data['image_path'] = $newImage->store('public/project/' . $project->id);
+    }
+
+    $project->update($data);
+
+    return redirect()->route('project.index', $project)
+        ->with('success', "Project {$project->name} updated successfully");
     }
 
     /**
@@ -126,6 +138,9 @@ class ProjectController extends Controller
     {
         $name = $project->name;
         $project->delete();
+        if ($project->image_path) {
+            Storage::delete(directory_name($project->image_path));
+        }
         return to_route('project.index')->with('success', "Project {$name} deleted successfully ");
     }
 }

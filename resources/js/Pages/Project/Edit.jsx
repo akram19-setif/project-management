@@ -8,7 +8,7 @@ import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Create({ auth, project }) {
   console.log(project);
-  const { data, setData, put, errors, reset } = useForm({
+  const { data, setData, post, errors, reset } = useForm({
     image: "",
     name: project?.data?.name || "",
     status: project?.data?.status || "",
@@ -20,7 +20,7 @@ export default function Create({ auth, project }) {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    put(route("project.update", project?.data?.id));
+    post(route("project.update", project?.data?.id));
   };
 
   return (
