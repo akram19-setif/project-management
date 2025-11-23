@@ -7,14 +7,15 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Create({ auth, task, projects, users }) {
+  
   const { data, setData, post, errors, reset } = useForm({
     image: "",
-    name: task.name || "",
-    status: task.status || "",
-    description: task.description || "",
-    due_date: task.due_date || "",
-    project_id: task.project_id || "",
-    priority: task.priority || "",
+    name: task.data.name || "",
+    status: task.data.status || "",
+    description: task.data.description || "",
+    due_date: task.data.due_date || "",
+    project_id: task.data.project_id || "",
+    priority: task.data.priority || "",
     assigned_user_id: task.assigned_user_id || "",
     _method: "PUT",
   });
@@ -22,7 +23,7 @@ export default function Create({ auth, task, projects, users }) {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    post(route("task.update", task.id));
+    post(route("task.update", task.data.id));
   };
 
   return (
@@ -31,7 +32,7 @@ export default function Create({ auth, task, projects, users }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Edit task "{task.name}"
+            Edit task "{task.data.name}"
           </h2>
         </div>
       }
@@ -45,9 +46,9 @@ export default function Create({ auth, task, projects, users }) {
               onSubmit={onSubmit}
               className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
             >
-              {task.image_path && (
+              {task.data.image_path && (
                 <div className="mb-4">
-                  <img src={task.image_path} className="w-64" />
+                  <img src={task.data.image_path} className="w-64" />
                 </div>
               )}
               <div>
@@ -56,12 +57,12 @@ export default function Create({ auth, task, projects, users }) {
                 <SelectInput
                   name="project_id"
                   id="task_project_id"
-                  value={data.project_id}
+                  value={task.data.project_id}
                   className="mt-1 block w-full"
                   onChange={(e) => setData("project_id", e.target.value)}
                 >
                   <option value="">Select Project</option>
-                  {projects.data.map((project) => (
+                  {projects?.data?.map((project) => (
                     <option value={project.id} key={project.id}>
                       {project.name}
                     </option>
@@ -75,11 +76,11 @@ export default function Create({ auth, task, projects, users }) {
                 <TextInput
                   id="task_image_path"
                   type="file"
-                  name="image"
+                  name="image_path"
                   className="mt-1 block w-full"
-                  onChange={(e) => setData("image", e.target.files[0])}
+                  onChange={(e) => setData("image_path", e.target.files[0])}
                 />
-                <InputError message={errors.image} className="mt-2" />
+                <InputError message={errors.image_path} className="mt-2" />
               </div>
               <div className="mt-4">
                 <InputLabel htmlFor="task_name" value="Task Name" />
@@ -178,7 +179,7 @@ export default function Create({ auth, task, projects, users }) {
                   onChange={(e) => setData("assigned_user_id", e.target.value)}
                 >
                   <option value="">Select User</option>
-                  {users.data.map((user) => (
+                  {users?.data?.map((user) => (
                     <option value={user.id} key={user.id}>
                       {user.name}
                     </option>

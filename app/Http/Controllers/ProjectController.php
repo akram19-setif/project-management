@@ -35,6 +35,8 @@ class ProjectController extends Controller
         if ($status = request('status')) {
             $query->where('status', $status);
         }
+
+        
         $projects = $query->orderBy($sortField, $sortDirection)->paginate(10)->onEachSide(1);
         $queryParams = request()->query() ?: null;
         return inertia('Project/Index', [
@@ -61,7 +63,6 @@ class ProjectController extends Controller
     $data['created_by'] = auth()->id(); 
     $data['updated_by'] = auth()->id();
 
-    
     $image = $request->file('image_path');  
     $projectData = Arr::except($data, ['image_path']); 
 
@@ -115,15 +116,15 @@ class ProjectController extends Controller
     public function update(UpdateProjectRequest  $request, Project $project)
     {
         $data = $request->validated();
-    $data['updated_by'] = auth()->user()->id;
-    $newImage = $request->file('image_path'); 
+        $data['updated_by'] = auth()->user()->id;
+        $newImage = $request->file('image_path'); 
 
-    if ($newImage) {
-        if ($project->image_path) {
-            Storage::delete($project->image_path);
+        if ($newImage) {
+            if ($project->image_path) {
+                Storage::delete($project->image_path);
+            }
+            $data['image_path'] = $newImage->store('public/project/' . $project->id);
         }
-        $data['image_path'] = $newImage->store('public/project/' . $project->id);
-    }
 
     $project->update($data);
 
