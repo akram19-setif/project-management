@@ -83,6 +83,7 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
+
         return inertia('Task/Show', [
             'task' => new TaskResource($task),
         ]);
@@ -111,13 +112,15 @@ class TaskController extends Controller
         $data = $request->validated();
         $image = $data['image_path'] ?? null;
         $data['updated_by'] = Auth::id();
-        if ($image) {
+        $newImage = $request->file('image_path'); 
+
+        if ($newImage) {
             if ($task->image_path) {
                 Storage::delete($task->image_path);
             }
-            $path = $image->store('public/task/' . $task->id);
-            $task->update(['image_path' => $path]);
+            $data['image_path'] = $newImage->store('public/task/' . $task->id);
         }
+
         $task->update($data);
 
         return to_route('task.index')

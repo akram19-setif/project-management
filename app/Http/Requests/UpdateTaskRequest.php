@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTaskRequest extends FormRequest
 {
@@ -22,7 +23,7 @@ class UpdateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-              'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             "image_path" => "image|nullable",
             "project_id" => "required|exists:projects,id",
             "assigned_user_id" => "required|exists:users,id",
