@@ -47,3 +47,5 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 # 13. Expose Port 80
 EXPOSE 80
+
+CMD ["/bin/bash", "-c", "php artisan migrate --force && apache2-foreground"]
