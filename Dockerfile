@@ -45,7 +45,8 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
+CMD ["/bin/bash", "-c", "php artisan migrate --force && apache2-foreground"]
+
 # 13. Expose Port 80
 EXPOSE 80
 
-CMD ["/bin/bash", "-c", "php artisan migrate --force && apache2-foreground"]
